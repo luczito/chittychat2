@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"context"
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -19,9 +18,6 @@ type Client struct {
 	lclock uint64
 }
 
-var serverName = flag.String("name", "localhost", "the server name")
-var serverPort = flag.String("port", "8080", "the server port")
-
 func parse() (string, error) {
 	var input string
 	sc := bufio.NewScanner(os.Stdin)
@@ -29,6 +25,21 @@ func parse() (string, error) {
 		input = sc.Text()
 	}
 	return input, nil
+}
+
+func listen(clientConnection chat.Chat_ConnectClient, c *Client) {
+	for {
+		msg, err := clientConnection.Recv()
+		if err != nil {
+			log.Fatalf("Unable to recieve the message %v", err)
+		}
+		if msg.Lclock > c.lclock {
+			c.lclock = msg.Lclock
+		}
+		c.lclock++
+
+		fmt.Printf("%v: %v\n", msg.Name, msg.Msg)
+	}
 }
 
 func start(c *Client) {
@@ -89,21 +100,6 @@ func start(c *Client) {
 		})
 	}
 	clientConnection.CloseSend()
-}
-
-func listen(clientConnection chat.Chat_ConnectClient, c *Client) {
-	for {
-		msg, err := clientConnection.Recv()
-		if err != nil {
-			log.Fatalf("Unable to recieve the message %v", err)
-		}
-		if msg.Lclock > c.lclock {
-			c.lclock = msg.Lclock
-		}
-		c.lclock++
-
-		fmt.Printf("%v: %v\n", msg.Name, msg.Msg)
-	}
 }
 
 func main() {
