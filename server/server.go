@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 	"sync"
 	chat "test/proto"
 	"time"
@@ -138,6 +139,13 @@ func start(s *Server) {
 }
 
 func main() {
+	f, err := os.OpenFile("log.server", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
+
 	flag.Parse()
 
 	server := &Server{

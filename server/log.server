@@ -1,0 +1,71 @@
+2022/11/01 21:46:54 Creating server on port 8080
+2022/11/01 21:48:05 Creating server on port 8080
+2022/11/01 21:48:21 Participant connected.
+2022/11/01 21:48:22 User: 1, connected to the chat via 127.0.0.1:62720
+2022/11/01 21:48:22 Sending new participant connection to all participants.
+2022/11/01 21:48:22 Listening for messages
+2022/11/01 21:48:26 Lclock: 2 | Recieved message hej, from localhost
+2022/11/01 21:48:26 Send message to all other participants with lclock: 3
+2022/11/01 21:48:26 Listening for messages
+2022/11/01 21:48:27 Lclock: 6 | Recieved message hej, from localhost
+2022/11/01 21:48:27 Send message to all other participants with lclock: 7
+2022/11/01 21:48:27 Listening for messages
+2022/11/01 21:48:27 Lclock: 10 | Recieved message hej, from localhost
+2022/11/01 21:48:27 Send message to all other participants with lclock: 11
+2022/11/01 21:48:27 Listening for messages
+2022/11/01 21:48:28 Lclock: 14 | Recieved message hej, from localhost
+2022/11/01 21:48:28 Send message to all other participants with lclock: 15
+2022/11/01 21:48:28 Listening for messages
+2022/11/01 21:48:28 Lclock: 18 | Recieved message hej, from localhost
+2022/11/01 21:48:28 Send message to all other participants with lclock: 19
+2022/11/01 21:48:28 Listening for messages
+2022/11/01 21:48:28 Lclock: 22 | Recieved message hej, from localhost
+2022/11/01 21:48:28 Send message to all other participants with lclock: 23
+2022/11/01 21:48:28 Listening for messages
+2022/11/01 21:48:29 Lclock: 26 | Recieved message hej, from localhost
+2022/11/01 21:48:29 Send message to all other participants with lclock: 27
+2022/11/01 21:48:29 Listening for messages
+2022/11/01 21:48:30 Lclock: 30 | Recieved message d, from localhost
+2022/11/01 21:48:30 Send message to all other participants with lclock: 31
+2022/11/01 21:48:30 Listening for messages
+2022/11/01 21:48:30 Lclock: 34 | Recieved message d, from localhost
+2022/11/01 21:48:30 Send message to all other participants with lclock: 35
+2022/11/01 21:48:30 Listening for messages
+2022/11/01 21:48:31 Lclock: 38 | Recieved message d, from localhost
+2022/11/01 21:48:31 Send message to all other participants with lclock: 39
+2022/11/01 21:48:31 Listening for messages
+2022/11/01 21:48:31 Lclock: 42 | Recieved message d, from localhost
+2022/11/01 21:48:31 Send message to all other participants with lclock: 43
+2022/11/01 21:48:31 Listening for messages
+2022/11/01 21:48:32 Lclock: 46 | Recieved message d, from localhost
+2022/11/01 21:48:32 Send message to all other participants with lclock: 47
+2022/11/01 21:48:32 Listening for messages
+2022/11/01 21:48:32 Lclock: 50 | Recieved message d, from localhost
+2022/11/01 21:48:32 Send message to all other participants with lclock: 51
+2022/11/01 21:48:32 Listening for messages
+2022/11/01 21:48:32 Lclock: 54 | Recieved message d, from localhost
+2022/11/01 21:48:32 Send message to all other participants with lclock: 55
+2022/11/01 21:48:32 Listening for messages
+2022/11/01 21:48:43 Participant connected.
+2022/11/01 21:48:44 User: 2, connected to the chat via 127.0.0.1:62747
+2022/11/01 21:48:44 Sending new participant connection to all participants.
+2022/11/01 21:48:44 Listening for messages
+2022/11/01 21:48:46 Lclock: 56 | Recieved message hej, from localhost
+2022/11/01 21:48:46 Send message to all other participants with lclock: 57
+2022/11/01 21:48:46 Listening for messages
+2022/11/01 21:48:46 Lclock: 60 | Recieved message hej, from localhost
+2022/11/01 21:48:46 Send message to all other participants with lclock: 61
+2022/11/01 21:48:46 Listening for messages
+2022/11/01 21:48:47 Lclock: 64 | Recieved message hej, from localhost
+2022/11/01 21:48:47 Send message to all other participants with lclock: 65
+2022/11/01 21:48:47 Listening for messages
+2022/11/01 21:48:48 Lclock: 68 | Recieved message hej, from localhost
+2022/11/01 21:48:48 Send message to all other participants with lclock: 69
+2022/11/01 21:48:48 Listening for messages
+2022/11/01 21:48:49 Lclock: 72 | Recieved message hej, from localhost
+2022/11/01 21:48:49 Send message to all other participants with lclock: 73
+2022/11/01 21:48:49 Listening for messages
+2022/11/01 21:48:50 Unable to recieve the message rpc error: code = Canceled desc = context canceled
+2022/11/01 21:48:50 73 Send leave msg to all other participants
+2022/11/01 21:48:51 Unable to recieve the message rpc error: code = Canceled desc = context canceled
+2022/11/01 21:48:51 73 Send leave msg to all other participants
