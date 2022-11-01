@@ -3,104 +3,136 @@ package main
 import (
 	"bufio"
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"os"
 	"strings"
-
-	chat "grpcChatServer/chat"
+	chat "test/proto"
 
 	"google.golang.org/grpc"
 )
+
+type Client struct {
+	name   string
+	port   string
+	lclock uint64
+}
+
+var serverName = flag.String("name", "localhost", "the server name")
+var serverPort = flag.String("port", "8080", "the server port")
+
+func parse() (string, error) {
+	var input string
+	sc := bufio.NewScanner(os.Stdin)
+	if sc.Scan() {
+		input = sc.Text()
+	}
+	return input, nil
+}
+
+func start(c *Client) {
+	fmt.Printf("Enter you username: ")
+
+	var clientConnection chat.Chat_ConnectClient
+
+	for {
+		connection, err := grpc.Dial(c.name+":"+c.port, grpc.WithInsecure())
+		if err != nil {
+			log.Fatalf("Unable to connect to the server %v", err)
+		}
+
+		client := chat.NewChatClient(connection)
+
+		clientConnection, err = client.Connect(context.Background())
+		if err != nil {
+			log.Fatalf("Unable to connect to the server %v", err)
+		}
+
+		username, err := parse()
+		if err != nil {
+			log.Fatalf("Unable to retrieve username %v", err)
+		}
+
+		clientConnection.Send(&chat.ClientMsg{
+			Name:   c.name,
+			Msg:    username,
+			Lclock: c.lclock,
+		})
+
+		message, err := clientConnection.Recv()
+		if err == nil {
+			fmt.Printf("%v: %v\n", message.Name, message.Msg)
+			break
+		}
+		fmt.Println("Username already in use, please try again.")
+	}
+
+	go listen(clientConnection, c)
+
+	for {
+		input, err := parse()
+		if err != nil {
+			log.Fatalf("Unable to retrieve the user input")
+		}
+
+		if input == "exit" {
+			break
+		}
+
+		c.lclock++
+
+		clientConnection.Send(&chat.ClientMsg{
+			Name:   c.name,
+			Msg:    input,
+			Lclock: c.lclock,
+		})
+	}
+	clientConnection.CloseSend()
+}
+
+func listen(clientConnection chat.Chat_ConnectClient, c *Client) {
+	for {
+		msg, err := clientConnection.Recv()
+		if err != nil {
+			log.Fatalf("Unable to recieve the message %v", err)
+		}
+		if msg.Lclock > c.lclock {
+			c.lclock = msg.Lclock
+		}
+		c.lclock++
+
+		fmt.Printf("%v: %v\n", msg.Name, msg.Msg)
+	}
+}
 
 func main() {
 	//set ip/port for server
 	fmt.Print("Enter Server IP:Port, press enter for default IP:Port")
 	reader := bufio.NewReader(os.Stdin)
-	serverID, err := reader.ReadString('\n')
+	server, err := reader.ReadString('\n')
 	if err != nil {
 		log.Printf("Unable to read from console: %v", err)
 	}
-	serverID = strings.Trim(serverID, "\r\n")
-
+	server = strings.Trim(server, "\r\n")
+	var serverName string
+	var serverPort string
 	//if ip:port is not set then default value.
-	if serverID == "" {
-		serverID = "localhost:8080"
-	}
-	log.Println("Connecting to the server: " + serverID)
-
-	//connect to grpc server
-	conn, err := grpc.Dial(serverID, grpc.WithInsecure())
-
-	if err != nil {
-		log.Fatalf("Unable to connect to gRPC server :: %v", err)
-	}
-	defer conn.Close()
-
-	//create stream via chat
-	client := chat.NewServicesClient(conn)
-
-	stream, err := client.ChatService(context.Background())
-	if err != nil {
-		log.Fatalf("Unable to call ChatService: %v", err)
+	if server == "" {
+		serverName = "localhost"
+		serverPort = "8080"
+	} else {
+		serverInfo := strings.Split(server, ":")
+		serverName = serverInfo[0]
+		serverPort = serverInfo[1]
 	}
 
-	// reg communication with server
-	ch := clienthandle{stream: stream}
-	ch.clientConfig()
-	go ch.sendMessage()
-	go ch.receiveMessage()
+	log.Printf("Connecting to the server: %v:%v", serverName, serverPort)
 
-	bl := make(chan bool)
-	<-bl
-
-}
-
-type clienthandle struct {
-	stream     chat.Services_ChatServiceClient
-	clientName string
-}
-
-// method to set custom usernames.
-func (ch *clienthandle) clientConfig() {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("Enter your username: ")
-	name, err := reader.ReadString('\n')
-	if err != nil {
-		log.Fatalf("Unable to read username from console: %v", err)
+	client := &Client{
+		name:   serverName,
+		port:   serverPort,
+		lclock: 0,
 	}
-	ch.clientName = strings.Trim(name, "\r\n")
-}
-
-func (ch *clienthandle) sendMessage() {
-	for {
-		fmt.Printf("->")
-		reader := bufio.NewReader(os.Stdin) //setup reader to console
-		clientMessage, err := reader.ReadString('\n')
-		if err != nil {
-			log.Fatalf("Unable to read from console :: %v", err)
-		}
-		clientMessage = strings.Trim(clientMessage, "\r\n")
-
-		//register message from console input
-		clientMessageBox := &chat.FromClient{
-			Name: ch.clientName,
-			Body: clientMessage,
-		}
-
-		err = ch.stream.Send(clientMessageBox)
-		if err != nil {
-			log.Printf("Error while sending message to server :: %v", err)
-		}
-	}
-}
-
-func (ch *clienthandle) receiveMessage() {
-	for {
-		mssg, err := ch.stream.Recv()
-		if err != nil {
-			log.Printf("Error in receiving message from server :: %v", err)
-		}
-		fmt.Printf("\nUser %s : %s \n->", mssg.Name, mssg.Body)
-	}
+	start(client)
 }

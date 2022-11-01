@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package chat;
+
+option go_package = "test/proto";
+
+service Chat{
+    rpc Connect(stream ClientMsg) returns (stream ServerMsg);
+}
+
+message ClientMsg{
+    string name = 1;
+    string msg = 2;
+    fixed64 lclock = 3;
+}
+
+message ServerMsg{
+    string name = 1;
+    string msg = 2;
+    fixed64 lclock = 3;
+}
